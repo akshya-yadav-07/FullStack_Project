@@ -53,7 +53,7 @@ const Login = () => {
                     <circle cx="8.5" cy="7" r="4" />
                     <path d="M20 8v6M23 11h-6" />
                   </svg>
-                  <span className="ml-3">Login</span>
+                  <span className="ml-3">Sign In</span>
                 </button>
                 <p className='mt-2'>
                     Don't have an account? <a href="/" className="text-indigo-500 hover:text-indigo-700">Sign Up</a>
