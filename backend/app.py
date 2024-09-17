@@ -9,7 +9,10 @@ CORS(app)
 # MongoDB setup
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = client['user_database']
+
+# Collections for users and details
 users_collection = db['users']
+details_collection = db['details']  # Define this collection for storing user details
 
 # Sign up route
 @app.route('/signup', methods=['POST'])
@@ -31,7 +34,7 @@ def signup():
 
     return jsonify({"message": "User signed up successfully"}), 201
 
-# Login route (optional, if you want to implement login)
+# Login route (optional)
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -40,10 +43,29 @@ def login():
 
     user = users_collection.find_one({'email': email})
 
+    # Check if user exists and password is correct
     if not user or not check_password_hash(user['password'], password):
-        return jsonify({"error": "Invalid password"}), 401
+        return jsonify({"error": "Invalid email or password"}), 401
 
-    return jsonify({"message": "Logged in successfully"}), 200
+    return jsonify({"message": "Logged in successfully", "email": user['email']}), 200
+
+# Details form route
+@app.route('/details', methods=['POST'])
+def store_details():
+    data = request.get_json()
+
+    # Insert the details into MongoDB
+    detail_id = details_collection.insert_one({
+        'name': data['name'],
+        'email': data['email'],
+        'phone': data['phone'],
+        'address': data['address'],
+        'city': data['city'],
+        'state': data['state'],
+        'zip': data['zip']
+    }).inserted_id
+
+    return jsonify({'message': 'Details stored successfully', 'id': str(detail_id)}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

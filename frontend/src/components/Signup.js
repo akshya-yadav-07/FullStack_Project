@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 
 // The handleSignup function
-const handleSignup = async (email, password) => {
+const handleSignup = async (email, password, navigate) => {
   try {
     const response = await axios.post('http://localhost:5000/signup', {
       email,
       password,
     });
     console.log(response.data.message);
+
+    // Redirect to detail form page upon successful signup
+    navigate('/details'); // Redirect to the details form route
   } catch (error) {
     console.error(error.response?.data?.error || 'Signup failed');
   }
@@ -18,10 +22,11 @@ const Signup = () => {
   // State for form input values
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // Get navigate function
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleSignup(email, password);  // Call the function to handle signup
+    handleSignup(email, password, navigate);  // Pass navigate to handleSignup
   };
 
   return (
